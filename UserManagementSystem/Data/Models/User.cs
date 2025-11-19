@@ -12,5 +12,7 @@
         public string? Note { get; set; }
         public byte IsActive { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public ICollection<Address> Addresses { get; set; }
+            = new List<Address>();
     }
 }
