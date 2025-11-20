@@ -35,9 +35,6 @@ namespace UserManagementSystem.ViewModels
         public bool IsActive { get; set; }
 
         [Required]
-        public DateTime CreatedAt { get; set; }
-
-        [Required]
         public AddressViewModel Address { get; set; } = null!;
     }
 }
