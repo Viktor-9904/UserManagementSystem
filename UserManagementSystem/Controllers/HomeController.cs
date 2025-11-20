@@ -25,13 +25,15 @@ namespace UserManagementSystem.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View();
+            List<UserViewModel> users = await usersService.FetchUsersAsync();
+
+            return View(users);
         }
 
         public async Task<IActionResult> LoadData()
         {
             List<UserViewModel> fetchedUsers = await usersService
-                .FetchUsersAsync(this.config["ApiSettings:UsersUrl"]!);
+                .FetchUsersByUrlAsync(this.config["ApiSettings:UsersUrl"]!);
 
             return View(nameof(Index), fetchedUsers);
         }
@@ -41,7 +43,7 @@ namespace UserManagementSystem.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(nameof(Index)); // todo: notify client for invalid input
+                return RedirectToAction(nameof(Index)); // todo: notify client for invalid input
             }
 
             bool deleteSuccess = await this.usersService.DeleteAllUsersAsync();
@@ -49,10 +51,10 @@ namespace UserManagementSystem.Controllers
 
             if (!saveSuccess && !deleteSuccess)
             {
-                //return
+                //todo: notify for unsuccessful saving
             }
 
-            return View(nameof(Index));
+            return RedirectToAction(nameof(Index));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,13 +1,11 @@
-﻿using System.Text.Json;
-
+﻿using Dapper;
 using Microsoft.Data.SqlClient;
-
+using System.Collections.Generic;
+using System.Text.Json;
+using UserManagementSystem.Data.Models;
 using UserManagementSystem.Repository.Interfaces;
 using UserManagementSystem.Services.Interfaces;
 using UserManagementSystem.ViewModels;
-
-using Dapper;
-using UserManagementSystem.Data.Models;
 
 namespace UserManagementSystem.Services
 {
@@ -24,7 +22,56 @@ namespace UserManagementSystem.Services
             this.config = config;
         }
 
-        public async Task<List<UserViewModel>> FetchUsersAsync(string url)
+        public async Task<List<UserViewModel>> FetchUsersAsync()
+        {
+            using var connection =
+                new SqlConnection(this.config["ConnectionStrings:DefaultConnection"]!);
+
+            await connection.OpenAsync();
+
+            IEnumerable<User> users = await connection.QueryAsync<User>(
+                @"SELECT * FROM Users");
+
+            IEnumerable<Address> addresses = await connection.QueryAsync<Address>(
+                @"SELECT * FROM Addresses");
+
+            if (!users.Any() || !addresses.Any())
+            {
+                return new List<UserViewModel>();
+            }
+
+            List<UserViewModel> userList = users
+                .Select(u => new UserViewModel
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Username = u.Username,
+                    Password = u.Password,
+                    Email = u.Email,
+                    Phone = u.Phone,
+                    Website = u.Website,
+                    Note = u.Note,
+                    IsActive = u.IsActive == 1,
+                    CreatedAt = u.CreatedAt,
+                    Address = new AddressViewModel
+                    {
+                        Street = addresses.FirstOrDefault(a => a.UserId == u.Id)?.Street ?? "Not Found",
+                        Suite = addresses.FirstOrDefault(a => a.UserId == u.Id)?.Suite ?? "Not Found",
+                        City = addresses.FirstOrDefault(a => a.UserId == u.Id)?.City ?? "Not Found",
+                        Zipcode = addresses.FirstOrDefault(a => a.UserId == u.Id)?.ZipCode ?? "Not Found",
+                        Geo = new GeoViewModel
+                        {
+                            Lat = addresses.FirstOrDefault(a => a.UserId == u.Id)?.Lat ?? 0,
+                            Lng = addresses.FirstOrDefault(a => a.UserId == u.Id)?.Lng ?? 0,
+                        }
+                    }
+                })
+                .ToList();
+
+            return userList;
+        }
+
+        public async Task<List<UserViewModel>> FetchUsersByUrlAsync(string url)
         {
             var obj = await JsonSerializer.DeserializeAsync<List<UserViewModel>>(
                 await new HttpClient().GetStreamAsync(url),
@@ -35,6 +82,7 @@ namespace UserManagementSystem.Services
 
             return obj;
         }
+
         public async Task<bool> DeleteAllUsersAsync()
         {
             try
@@ -55,7 +103,7 @@ namespace UserManagementSystem.Services
         {
             try
             {
-                using var connection = 
+                using var connection =
                     new SqlConnection(this.config["ConnectionStrings:DefaultConnection"]!);
 
                 await connection.OpenAsync();
@@ -91,7 +139,7 @@ namespace UserManagementSystem.Services
             {
                 Console.WriteLine(ex.Message);
                 return false;
-            }            
+            }
         }
     }
 }
