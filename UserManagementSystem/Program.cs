@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 
 using UserManagementSystem.Data;
+using UserManagementSystem.Services;
+using UserManagementSystem.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<UserManagementSystemDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IUsersService, UserService>();
 
 var app = builder.Build();
 
