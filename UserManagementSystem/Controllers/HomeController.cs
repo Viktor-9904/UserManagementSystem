@@ -1,19 +1,28 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using UserManagementSystem.Models;
+using UserManagementSystem.Services.Interfaces;
+using UserManagementSystem.ViewModels;
 
 namespace UserManagementSystem.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
+        private readonly IUsersService usersService;
+        private readonly IConfiguration config;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            IUsersService userService,
+            IConfiguration config)
         {
-            _logger = logger;
+            this.logger = logger;
+            this.usersService = userService;
+            this.config = config;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
@@ -21,6 +30,14 @@ namespace UserManagementSystem.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public async Task<IActionResult> LoadData()
+        {
+            IEnumerable<UserViewModel> fetchedUsers = await usersService
+                .FetchUsers(this.config["ApiSettings:UsersUrl"]!);
+
+            return View(nameof(Index), fetchedUsers);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
