@@ -6,5 +6,6 @@ namespace UserManagementSystem.Services.Interfaces
     {
         public Task<List<UserViewModel>> FetchUsersAsync(string url);
         public Task<bool> DeleteAllUsersAsync();
+        public Task<bool> SaveAllUsersAsync(List<UserViewModel> users);
     }
 }

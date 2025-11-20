@@ -1,6 +1,6 @@
 ﻿@using UserManagementSystem.ViewModels
 
-@model IEnumerable<UserViewModel>
+@model List<UserViewModel>
 
 @{
     ViewData["Title"] = "Users";
@@ -36,35 +36,75 @@ else
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var user in Model)
+                    @for (int i = 0; i < Model.Count(); i++)
                     {
+                        var user = Model[i];
+
                         <tr class="table-light">
-                            <td class="text-center">@user.Name</td>
-                            <td class="text-center">@user.Username</td>
-                            <td class="text-center">@user.Email</td>
-                            <td class="text-center">@user.Phone</td>
-                            <td class="text-center">@user.Website</td>
+                            <td class="text-center">
+                                @user.Name
+                                <input type="hidden" name="users[@i].Name" value="@user.Name" />
+                            </td>
+
+                            <td class="text-center">
+                                @user.Username
+                                <input type="hidden" name="users[@i].Username" value="@user.Username" />
+                            </td>
+
+                            <td class="text-center">
+                                @user.Email
+                                <input type="hidden" name="users[@i].Email" value="@user.Email" />
+                            </td>
+
+                            <td class="text-center">
+                                @user.Phone
+                                <input type="hidden" name="users[@i].Phone" value="@user.Phone" />
+                            </td>
+
+                            <td class="text-center">
+                                @user.Website
+                                <input type="hidden" name="users[@i].Website" value="@user.Website" />
+                            </td>
+
                             <td class="text-center">
                                 @user.Address.Street, @user.Address.Suite, @user.Address.City, @user.Address.Zipcode
                                 <br />
                                 Lat: @user.Address.Geo.Lat, Lng: @user.Address.Geo.Lng
+
+                                <input type="hidden" name="users[@i].Address.Street" value="@user.Address.Street" />
+                                <input type="hidden" name="users[@i].Address.Suite" value="@user.Address.Suite" />
+                                <input type="hidden" name="users[@i].Address.City" value="@user.Address.City" />
+                                <input type="hidden" name="users[@i].Address.Zipcode" value="@user.Address.Zipcode" />
+
+                                <input type="hidden" name="users[@i].Address.Geo.Lat" value="@user.Address.Geo.Lat" />
+                                <input type="hidden" name="users[@i].Address.Geo.Lng" value="@user.Address.Geo.Lng" />
                             </td>
+
                             <td>
-                                <textarea class="form-control" name="[users][@user.Id].Note">@user.Note</textarea>
+                                <textarea class="form-control" name="users[@i].Note">@user.Note</textarea>
                             </td>
+
                             <td>
                                 <div class="form-check d-flex justify-content-center">
-                                    <input type="checkbox" class="form-check-input" name="[users][@user.Id].IsActive" value="true" @(user.IsActive ? "checked" : "") />
-                                    <input type="hidden" name="[users][@user.Id].IsActive" value="false" />
+                                    <input type="checkbox" class="form-check-input" name="users[@i].IsActive" value="true" @(user.IsActive ? "checked" : "") />
+                                    <input type="hidden" name="users[@i].IsActive" value="false" />
                                 </div>
                             </td>
+
                             <td>
-                                <input type="password" class="form-control" name="[users][@user.Id].Password" value="@user.Password" />
+                                <input type="password" class="form-control" name="users[@i].Password" value="@user.Password" />
                             </td>
                         </tr>
                     }
                 </tbody>
+
             </table>
+        </div>
+
+        <div class="mt-3 text-center">
+            <button type="submit" class="btn btn-success px-4" style="background-color:#8BC34A; border-color:#8BC34A;">
+                Save All
+            </button>
         </div>
     </form>
 }
@@ -72,10 +112,4 @@ else
     <a class="btn btn-primary px-4" asp-action="LoadData" style="background-color: #348feb; border-color: #348feb;">
         Load Data
     </a>
-    @if (Model != null && Model.Any())
-    {
-        <button type="submit" class="btn btn-success px-4" style="background-color:#8BC34A; border-color:#8BC34A;">
-            Save All
-        </button>
-    }
 </div>

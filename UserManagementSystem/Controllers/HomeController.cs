@@ -1,6 +1,7 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using UserManagementSystem.Models;
+using UserManagementSystem.Services;
 using UserManagementSystem.Services.Interfaces;
 using UserManagementSystem.ViewModels;
 
@@ -29,10 +30,29 @@ namespace UserManagementSystem.Controllers
 
         public async Task<IActionResult> LoadData()
         {
-            IEnumerable<UserViewModel> fetchedUsers = await usersService
-                .FetchUsers(this.config["ApiSettings:UsersUrl"]!);
+            List<UserViewModel> fetchedUsers = await usersService
+                .FetchUsersAsync(this.config["ApiSettings:UsersUrl"]!);
 
             return View(nameof(Index), fetchedUsers);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveAll(List<UserViewModel> users)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(Index)); // todo: notify client for invalid input
+            }
+
+            bool deleteSuccess = await this.usersService.DeleteAllUsersAsync();
+            bool saveSuccess = await this.usersService.SaveAllUsersAsync(users);
+
+            if (!saveSuccess && !deleteSuccess)
+            {
+                //return
+            }
+
+            return View(nameof(Index));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -42,3 +62,4 @@ namespace UserManagementSystem.Controllers
         }
     }
 }
+  
