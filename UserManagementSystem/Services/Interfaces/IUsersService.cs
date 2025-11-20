@@ -4,6 +4,7 @@ namespace UserManagementSystem.Services.Interfaces
 {
     public interface IUsersService
     {
-        public Task<IEnumerable<UserViewModel>> FetchUsers(string url);
+        public Task<List<UserViewModel>> FetchUsersAsync(string url);
+        public Task<bool> DeleteAllUsersAsync();
     }
 }
