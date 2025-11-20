@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 using static UserManagementSystem.Common.EntityValidationConstants.Address;
 
@@ -23,9 +24,18 @@ namespace UserManagementSystem.ViewModels
         public string Zipcode { get; set; } = null!;
 
         [Required]
+        public GeoViewModel Geo { get; set; } = null!;
+
+    }
+
+    public class GeoViewModel
+    {
+        [Required]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         public double Lat { get; set; }
 
         [Required]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         public double Lng { get; set; }
     }
 }
