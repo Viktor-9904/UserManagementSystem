@@ -43,7 +43,8 @@ namespace UserManagementSystem.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index)); // todo: notify client for invalid input
+                TempData["Error"] = "Failed to save users! Invalid Input!";
+                return View(nameof(Index), users);
             }
 
             bool deleteSuccess = await this.usersService.DeleteAllUsersAsync();
@@ -51,9 +52,11 @@ namespace UserManagementSystem.Controllers
 
             if (!saveSuccess && !deleteSuccess)
             {
-                //todo: notify for unsuccessful saving
+                TempData["Error"] = "Failed to save users!";
+                return View(nameof(Index), users);
             }
 
+            TempData["Success"] = "Users saved successully!";
             return RedirectToAction(nameof(Index));
         }
 

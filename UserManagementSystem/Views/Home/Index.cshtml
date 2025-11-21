@@ -92,7 +92,7 @@ else
                             </td>
 
                             <td>
-                                <input type="password" class="form-control" name="users[@i].Password" value="@user.Password" />
+                                <input required type="password" class="form-control" name="users[@i].Password" value="@user.Password" />
                             </td>
                         </tr>
                     }
@@ -113,3 +113,58 @@ else
         Load Data
     </a>
 </div>
+
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-success">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="successLabel">Success</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                @TempData["Success"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-danger">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="errorLabel">Error</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                @TempData["Error"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            @if (TempData["Success"] != null)
+            {
+                    <text>
+                    new bootstrap.Modal(document.getElementById("successModal")).show();
+                    </text>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                    <text>
+                    new bootstrap.Modal(document.getElementById("errorModal")).show();
+                    </text>
+            }
+        });
+    </script>
+}
