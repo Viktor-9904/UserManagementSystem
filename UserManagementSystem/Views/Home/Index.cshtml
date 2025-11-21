@@ -16,6 +16,12 @@
     <div class="alert alert-info text-center">
         No users available. Click "Load Data" to fetch users.
     </div>
+
+    <div class="mt-3 text-center">
+        <a class="btn btn-primary px-4" asp-action="LoadData" style="background-color: #348feb; border-color: #348feb;">
+            Load Data
+        </a>
+    </div>
 }
 else
 {
@@ -105,14 +111,12 @@ else
             <button type="submit" class="btn btn-success px-4" style="background-color:#8BC34A; border-color:#8BC34A;">
                 Save All
             </button>
+            <a class="btn btn-primary px-4" asp-action="LoadData" style="background-color: #348feb; border-color: #348feb;">
+                Load Data
+            </a>
         </div>
     </form>
 }
-<div class="mt-3 text-center">
-    <a class="btn btn-primary px-4" asp-action="LoadData" style="background-color: #348feb; border-color: #348feb;">
-        Load Data
-    </a>
-</div>
 
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -154,16 +158,16 @@ else
 
             @if (TempData["Success"] != null)
             {
-                    <text>
-                    new bootstrap.Modal(document.getElementById("successModal")).show();
-                    </text>
+                        <text>
+                        new bootstrap.Modal(document.getElementById("successModal")).show();
+                        </text>
             }
 
             @if (TempData["Error"] != null)
             {
-                    <text>
-                    new bootstrap.Modal(document.getElementById("errorModal")).show();
-                    </text>
+                        <text>
+                        new bootstrap.Modal(document.getElementById("errorModal")).show();
+                        </text>
             }
         });
     </script>
